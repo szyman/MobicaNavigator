@@ -1,0 +1,62 @@
+<com.campusnavigator.view.MenuView 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" >
+
+<LinearLayout android:id="@layout/menu_layout"
+    
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <TextView android:id="@+id/choose_label" 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/chose_string"
+        android:textStyle="bold"
+        />
+
+
+<!--     <ListView
+        android:id="@+id/office_list"
+        android:choiceMode="singleChoice" 
+        android:listSelector="@android:color/darker_gray"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent" >
+        
+    </ListView> -->
+
+	<RadioGroup
+	    android:id="@+id/radio_mobica_office"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content">
+	<RadioButton android:id="@+id/radio_lodz"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:text="@string/lodz_office"/>
+	<RadioButton android:id="@+id/radio_szczecin"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:text="@string/szczecin_office"/>
+	    
+	</RadioGroup>
+	
+	<Button android:id="@+id/go_map_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/go_map_string"
+        />
+	<Button android:id="@+id/go_compas_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/go_compas"
+        />
+	<Button android:id="@+id/go_augmented_reality"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/go_augmented_reality"
+     />
+
+</LinearLayout>
+
+</com.campusnavigator.view.MenuView>

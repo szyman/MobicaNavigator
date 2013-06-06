@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Campus Navigator</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_menu">MenuActivity</string>
+    <string name="title_activity_map">Navigate on the Map</string>
+    <string name="title_activity_aug">Augmented Reality</string>
+    <string name="go_map_string">Navigate on the map</string>
+    <string name="go_augmented_reality">Augmented Reality</string>
+    <string name="accept_button">Accept</string>
+    <string name="chose_string">Select mobica office from the list</string>
+    <string name="lodz_office">Lodz office</string>
+    <string name="szczecin_office">Szczecin office</string>
+    <string name="title_activity_compas">CompasActivity</string>
+    <string name="go_compas">Compas</string>
+
+</resources>
