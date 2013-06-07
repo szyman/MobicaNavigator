@@ -1,4 +1,4 @@
-package com.campusnavigator.provider;
+package com.campusnavigator.activity.providers;
 
 import android.content.Context;
 import android.hardware.Sensor;

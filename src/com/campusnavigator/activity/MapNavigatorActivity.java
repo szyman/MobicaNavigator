@@ -1,30 +1,23 @@
 package com.campusnavigator.activity;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executor;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.graphics.Color;
-import android.os.AsyncTask;
+import android.location.Location;
+import android.location.LocationListener;
 import android.os.Bundle;
 
+import com.campusnavigator.activity.providers.GpsProvider;
+import com.campusnavigator.activity.threats.RouteCompute;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
+import com.google.android.gms.maps.LocationSource.OnLocationChangedListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -34,184 +27,119 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.main.campusnavigator.R;
 
-public class MapNavigatorActivity extends Activity implements OnMapClickListener, OnDismissListener {
+public class MapNavigatorActivity extends Activity implements
+		OnMapClickListener, OnDismissListener, LocationListener {
 
-		private LatLng LODZ_START = new LatLng(51.7592485,19.45598330000007);
-		private LatLng LODZ_DEST;
+	private LatLng LODZ_START = new LatLng(51.7592485, 19.45598330000007);
+	private LatLng LODZ_DEST;
+
+	private GoogleMap map;
+	private List<LatLng> routePointsList;
+	private Marker startMarker;
+	private Polyline polyline;
+	private RouteCompute routeCompute;
+	private ProgressDialog pDialog;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		Bundle extras = getIntent().getExtras();
+		float[] officeDirection = extras.getFloatArray("officeDirection");
+		LODZ_DEST = new LatLng(officeDirection[1], officeDirection[0]);
+
+		setContentView(R.layout.map_layout);
+		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
+				.getMap();
+		map.setOnMapClickListener(this);
 		
-		private GoogleMap map;
-		private List<LatLng> routePointsList;
-		private Marker startMarker;
-		private Polyline polyline;
-		private RouteCompute routeCompute;
-		private ProgressDialog pDialog;
 		
-		@Override
-		protected void onCreate(Bundle savedInstanceState) {
-			super.onCreate(savedInstanceState);
-			
-		    Bundle extras = getIntent().getExtras();
-			float[] officeDirection = extras.getFloatArray("officeDirection");
-			LODZ_DEST = new LatLng(officeDirection[1], officeDirection[0]);
-			
-			
-			setContentView(R.layout.map_layout);
-			map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
-					.getMap();
-			map.setOnMapClickListener(this);
-			
-			pDialog = new ProgressDialog(MapNavigatorActivity.this);
-			pDialog.setOnDismissListener(this);
-			
+		new GpsProvider(getApplicationContext(), this);
+
+		pDialog = new ProgressDialog(MapNavigatorActivity.this);
+		pDialog.setOnDismissListener(this);
+
+		startMarker = map.addMarker(new MarkerOptions()
+				.position(LODZ_START)
+				.title("Lodz")
+				.snippet("Your Poss")
+				.icon(BitmapDescriptorFactory
+						.fromResource(R.drawable.ic_launcher)));
+		map.addMarker(new MarkerOptions().position(LODZ_DEST));
+
+		LatLng midleRoute = new LatLng(
+				(LODZ_START.latitude + LODZ_DEST.latitude) / 2,
+				(LODZ_START.longitude + LODZ_DEST.longitude) / 2);
+		map.moveCamera(CameraUpdateFactory.newLatLngZoom(midleRoute, 5));
+
+		// Zoom in, animating the camera.
+		map.animateCamera(CameraUpdateFactory.zoomTo(8), 2000, null);
+
+		/*
+		 * RouteComputeThreat routeComputeThreat = new
+		 * RouteComputeThreat(LODZ_START, LODZ_DEST); routeComputeThreat.run();
+		 */
+
+		routeCompute = new RouteCompute(this, pDialog, LODZ_START, LODZ_DEST);
+		routeCompute.execute();
+
+	}
+
+	@Override
+	public void onMapClick(LatLng actualPos) {
+		LODZ_START = actualPos;
+		startMarker.setPosition(actualPos);
+		routeCompute = new RouteCompute(this, pDialog, actualPos, LODZ_DEST);
+		routeCompute.execute();
+	}
+
+	@Override
+	public void onDismiss(DialogInterface dialog) {
+		// TODO Auto-generated method stub
+		routePointsList = new ArrayList<LatLng>(
+				routeCompute.getRoutePointsList());
+		if (polyline != null) {
+			polyline.remove();
+			map.clear();
 			startMarker = map.addMarker(new MarkerOptions()
 					.position(LODZ_START)
 					.title("Lodz")
 					.snippet("Your Poss")
 					.icon(BitmapDescriptorFactory
 							.fromResource(R.drawable.ic_launcher)));
-			Marker destMarker = map.addMarker(new MarkerOptions().position(LODZ_DEST));
-
-			map.moveCamera(CameraUpdateFactory.newLatLngZoom(LODZ_START, 15));
-
-			// Zoom in, animating the camera.
-			map.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
-
-/*			RouteComputeThreat routeComputeThreat = new RouteComputeThreat(LODZ_START, LODZ_DEST);
-			routeComputeThreat.run();*/
-			
-			routeCompute = new RouteCompute();
-			routeCompute.execute();
-			
-
+			map.addMarker(new MarkerOptions().position(LODZ_DEST));
+			polyline = null;
 		}
+		for (int i = 0; i < routePointsList.size() - 1; i++) {
+			LatLng startPoint = routePointsList.get(i);
+			LatLng destPoint = routePointsList.get(i + 1);
+			polyline = map.addPolyline(new PolylineOptions()
+					.add(startPoint, destPoint).width(2).color(Color.RED));
+		}
+	}
+
+	@Override
+	public void onLocationChanged(Location changedLoc) {
+		// TODO Auto-generated method stub
+		LatLng latLng = new LatLng(changedLoc.getLatitude(), changedLoc.getLongitude());
+	}
+
+	@Override
+	public void onProviderDisabled(String provider) {
+		// TODO Auto-generated method stub
 		
-		@Override
-		public void onMapClick(LatLng actualPos) {
-			LODZ_START = actualPos;
-			startMarker.setPosition(actualPos);
-			new RouteCompute().execute();
-		}
+	}
+
+	@Override
+	public void onProviderEnabled(String provider) {
+		// TODO Auto-generated method stub
 		
-		@Override
-		public void onDismiss(DialogInterface dialog) {
-			// TODO Auto-generated method stub
-			if(polyline != null){
-				polyline.remove();
-				map.clear();
-				startMarker = map.addMarker(new MarkerOptions()
-				.position(LODZ_START)
-				.title("Lodz")
-				.snippet("Your Poss")
-				.icon(BitmapDescriptorFactory
-						.fromResource(R.drawable.ic_launcher)));
-		Marker destMarker = map.addMarker(new MarkerOptions().position(LODZ_DEST));				
-				polyline = null;
-			}
-			for(int i=0; i < routePointsList.size() - 1; i++){
-				LatLng startPoint = routePointsList.get(i);
-				LatLng destPoint = routePointsList.get(i+1);
-				polyline = map.addPolyline(new PolylineOptions().add(startPoint, destPoint).width(2).color(Color.RED));
-			}
-		}
+	}
 
-		private class RouteCompute extends AsyncTask<String, String, String>{
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                
-                pDialog.setMessage("Loading route. Please wait...");
-                pDialog.setIndeterminate(false);
-                pDialog.setCancelable(false);
-                pDialog.show();
-            }
-			
-			@Override
-			protected String doInBackground(String... params) {
-				String originLatLngString = LODZ_START.latitude + "," + LODZ_START.longitude;
-				String destLatLngString = LODZ_DEST.latitude + "," + LODZ_DEST.longitude;
-	            String stringUrl = "http://maps.googleapis.com/maps/api/directions/json?origin=" + originLatLngString + "&destination=" + destLatLngString + "&sensor=false";
-	            StringBuilder response = new StringBuilder();
-				
-	            URL url;
-				try {
-					url = new URL(stringUrl);
-					HttpURLConnection urlConn = (HttpURLConnection)url.openConnection();
-					if(urlConn.getResponseCode() == HttpURLConnection.HTTP_OK){
-						BufferedReader inputBuff = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
-						String inputReaded = null;
-						while ((inputReaded = inputBuff.readLine()) !=null ){
-							response.append(inputReaded);
-						}
-						inputBuff.close();
-					}
-					
-					String jsonString = response.toString();
-					JSONObject routeJson = new JSONObject(jsonString);
-					JSONArray routeArray = routeJson.getJSONArray("routes");
-					JSONObject route = routeArray.getJSONObject(0);
-					JSONObject poly = route.getJSONObject("overview_polyline");
-					String polyline = poly.getString("points");
-                    routePointsList = decodePoly(polyline);
-					
-					
-				} catch (MalformedURLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+	@Override
+	public void onStatusChanged(String provider, int status, Bundle extras) {
+		// TODO Auto-generated method stub
+		
+	}
 
-				return null;
-			}
-			
-			@Override
-			protected void onPostExecute(String result) {
-				// TODO Auto-generated method stub
-
-				pDialog.dismiss();
-			}
-			
-		}
-		 private List<LatLng> decodePoly(String encoded) {
-
-	            List<LatLng> poly = new ArrayList<LatLng>();
-	            int index = 0, len = encoded.length();
-	            int lat = 0, lng = 0;
-
-	            while (index < len) {
-	                int b, shift = 0, result = 0;
-	                do {
-	                    b = encoded.charAt(index++) - 63;
-	                    result |= (b & 0x1f) << shift;
-	                    shift += 5;
-	                } while (b >= 0x20);
-	                int dlat = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-	                lat += dlat;
-
-	                shift = 0;
-	                result = 0;
-	                do {
-	                    b = encoded.charAt(index++) - 63;
-	                    result |= (b & 0x1f) << shift;
-	                    shift += 5;
-	                } while (b >= 0x20);
-	                int dlng = ((result & 1) != 0 ? ~(result >> 1) : (result >> 1));
-	                lng += dlng;
-
-	                LatLng p = new LatLng((((double) lat / 1E5)),
-	                        (((double) lng / 1E5)));
-	                poly.add(p);
-	            }
-
-	            return poly;
-	        }
-
-
-
-
-				
 }
