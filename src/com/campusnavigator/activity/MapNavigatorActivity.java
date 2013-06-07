@@ -16,11 +16,12 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
-import com.campusnavigator.activity.threats.RouteComputeThreat;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
@@ -33,7 +34,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.main.campusnavigator.R;
 
-public class MapNavigatorActivity extends Activity implements OnMapClickListener {
+public class MapNavigatorActivity extends Activity implements OnMapClickListener, OnDismissListener {
 
 		private LatLng LODZ_START = new LatLng(51.7592485,19.45598330000007);
 		private LatLng LODZ_DEST;
@@ -42,10 +43,7 @@ public class MapNavigatorActivity extends Activity implements OnMapClickListener
 		private List<LatLng> routePointsList;
 		private Marker startMarker;
 		private Polyline polyline;
-		private PolylineOptions polylineOptions;
 		private RouteCompute routeCompute;
-		private static volatile Executor sDefaultExecutor;
-		private boolean isFinished;
 		private ProgressDialog pDialog;
 		
 		@Override
@@ -62,6 +60,9 @@ public class MapNavigatorActivity extends Activity implements OnMapClickListener
 					.getMap();
 			map.setOnMapClickListener(this);
 			
+			pDialog = new ProgressDialog(MapNavigatorActivity.this);
+			pDialog.setOnDismissListener(this);
+			
 			startMarker = map.addMarker(new MarkerOptions()
 					.position(LODZ_START)
 					.title("Lodz")
@@ -74,7 +75,6 @@ public class MapNavigatorActivity extends Activity implements OnMapClickListener
 
 			// Zoom in, animating the camera.
 			map.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
-			polylineOptions = new PolylineOptions();
 
 /*			RouteComputeThreat routeComputeThreat = new RouteComputeThreat(LODZ_START, LODZ_DEST);
 			routeComputeThreat.run();*/
@@ -87,14 +87,38 @@ public class MapNavigatorActivity extends Activity implements OnMapClickListener
 		
 		@Override
 		public void onMapClick(LatLng actualPos) {
-			routeCompute.executeOnExecutor(sDefaultExecutor);
+			LODZ_START = actualPos;
+			startMarker.setPosition(actualPos);
+			new RouteCompute().execute();
 		}
 		
+		@Override
+		public void onDismiss(DialogInterface dialog) {
+			// TODO Auto-generated method stub
+			if(polyline != null){
+				polyline.remove();
+				map.clear();
+				startMarker = map.addMarker(new MarkerOptions()
+				.position(LODZ_START)
+				.title("Lodz")
+				.snippet("Your Poss")
+				.icon(BitmapDescriptorFactory
+						.fromResource(R.drawable.ic_launcher)));
+		Marker destMarker = map.addMarker(new MarkerOptions().position(LODZ_DEST));				
+				polyline = null;
+			}
+			for(int i=0; i < routePointsList.size() - 1; i++){
+				LatLng startPoint = routePointsList.get(i);
+				LatLng destPoint = routePointsList.get(i+1);
+				polyline = map.addPolyline(new PolylineOptions().add(startPoint, destPoint).width(2).color(Color.RED));
+			}
+		}
+
 		private class RouteCompute extends AsyncTask<String, String, String>{
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                pDialog = new ProgressDialog(MapNavigatorActivity.this);
+                
                 pDialog.setMessage("Loading route. Please wait...");
                 pDialog.setIndeterminate(false);
                 pDialog.setCancelable(false);
@@ -147,11 +171,7 @@ public class MapNavigatorActivity extends Activity implements OnMapClickListener
 			@Override
 			protected void onPostExecute(String result) {
 				// TODO Auto-generated method stub
-				for(int i=0; i < routePointsList.size() - 1; i++){
-					LatLng startPoint = routePointsList.get(i);
-					LatLng destPoint = routePointsList.get(i+1);
-					polyline = map.addPolyline(polylineOptions.add(startPoint, destPoint).width(2).color(Color.RED));
-				}
+
 				pDialog.dismiss();
 			}
 			
@@ -189,6 +209,9 @@ public class MapNavigatorActivity extends Activity implements OnMapClickListener
 
 	            return poly;
 	        }
+
+
+
 
 				
 }
