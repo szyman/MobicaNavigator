@@ -5,6 +5,8 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 
+import com.campusnavigator.patterns.GpsListenerFactory;
+
 
 public class GpsProvider {
 
@@ -13,7 +15,8 @@ public class GpsProvider {
 	
 	public GpsProvider(Context context, Object locListener2){
 		LocationManager locationManager = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
-		LocationListener locListener = (LocationListener) locListener2;
+		
+		LocationListener locListener = GpsListenerFactory.createListener(locListener2);
 		
 		if (locationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
 			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,1000L,500.0f, locListener);

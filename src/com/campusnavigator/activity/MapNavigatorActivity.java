@@ -28,7 +28,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.main.campusnavigator.R;
 
 public class MapNavigatorActivity extends Activity implements
-		OnMapClickListener, OnDismissListener, LocationListener {
+		OnMapClickListener, OnDismissListener {
 
 	private LatLng LODZ_START = new LatLng(51.7592485, 19.45598330000007);
 	private LatLng LODZ_DEST;
@@ -70,10 +70,10 @@ public class MapNavigatorActivity extends Activity implements
 		LatLng midleRoute = new LatLng(
 				(LODZ_START.latitude + LODZ_DEST.latitude) / 2,
 				(LODZ_START.longitude + LODZ_DEST.longitude) / 2);
-		map.moveCamera(CameraUpdateFactory.newLatLngZoom(midleRoute, 5));
+		map.moveCamera(CameraUpdateFactory.newLatLngZoom(LODZ_START, 5));
 
 		// Zoom in, animating the camera.
-		map.animateCamera(CameraUpdateFactory.zoomTo(8), 2000, null);
+		map.animateCamera(CameraUpdateFactory.zoomTo(5), 2000, null);
 
 		/*
 		 * RouteComputeThreat routeComputeThreat = new
@@ -88,9 +88,25 @@ public class MapNavigatorActivity extends Activity implements
 	@Override
 	public void onMapClick(LatLng actualPos) {
 		LODZ_START = actualPos;
-		startMarker.setPosition(actualPos);
-		routeCompute = new RouteCompute(this, pDialog, actualPos, LODZ_DEST);
-		routeCompute.execute();
+		//startMarker.setPosition(actualPos);
+		//routeCompute = new RouteCompute(this, pDialog, actualPos, LODZ_DEST);
+		//routeCompute.execute();
+		
+		for(int i=0; i<routePointsList.size() - 10; i++)
+			routePointsList.remove(i);
+		//polyline.setPoints(routePointsList);
+		
+		polyline.remove();
+		map.clear();
+		int size = routePointsList.size() + 10 - routePointsList.size(); 
+		
+		for (int i = 0; i < size; i++) {
+			LatLng startPoint = routePointsList.get(i);
+			LatLng destPoint = routePointsList.get(i + 1);
+			polyline = map.addPolyline(new PolylineOptions()
+					.add(startPoint, destPoint).width(2).color(Color.RED));
+			
+		}
 	}
 
 	@Override
@@ -115,31 +131,8 @@ public class MapNavigatorActivity extends Activity implements
 			LatLng destPoint = routePointsList.get(i + 1);
 			polyline = map.addPolyline(new PolylineOptions()
 					.add(startPoint, destPoint).width(2).color(Color.RED));
+			
 		}
-	}
-
-	@Override
-	public void onLocationChanged(Location changedLoc) {
-		// TODO Auto-generated method stub
-		LatLng latLng = new LatLng(changedLoc.getLatitude(), changedLoc.getLongitude());
-	}
-
-	@Override
-	public void onProviderDisabled(String provider) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onProviderEnabled(String provider) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onStatusChanged(String provider, int status, Bundle extras) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }
