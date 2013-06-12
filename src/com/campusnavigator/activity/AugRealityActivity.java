@@ -15,6 +15,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 
+import com.campusnavigator.activity.providers.GpsProvider;
 import com.campusnavigator.view.AugRealityView;
 import com.main.campusnavigator.R;
 
@@ -42,6 +43,8 @@ public class AugRealityActivity extends MainActivity implements SensorEventListe
 	
 	private Location mobicaLodzLoc;
 	
+
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -69,20 +72,8 @@ public class AugRealityActivity extends MainActivity implements SensorEventListe
 		setContentView(augRealityView);
 		addContentView(((AugRealityView)augRealityView).getMarkersView(), new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		
-		LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-		LocationListener locListener = new GPSProvider();
-		
-		if(locationManager.getProvider(mocLocationName) == null)
-			locationManager.addTestProvider(mocLocationName, false, false, false, false, true, true, true, 0, 5);
-		
-		//Temporary
-		//Required ACCESS_MOCK_LOCATIOn
-		locationManager.requestLocationUpdates(mocLocationName, 0, 0, locListener);
-		Location location = new Location(mocLocationName);
-		location.setLongitude(19.449553728627507);
-		location.setLatitude(51.745472398279915);
-		locationManager.setTestProviderEnabled(mocLocationName, true);
-		locationManager.setTestProviderLocation(mocLocationName, location);
+		new GpsProvider(getApplicationContext(), this);
+	
 	}
 	
 	@Override
@@ -156,38 +147,12 @@ public class AugRealityActivity extends MainActivity implements SensorEventListe
 		}
 	}
 	
-	private class GPSProvider implements LocationListener{
-
-		final float[] results= new float[3];
-		@Override
-		public void onLocationChanged(Location location) {
-			// TODO Auto-generated method stub
-			
-			Location.distanceBetween(location.getLatitude(), location.getLongitude(), mobicaLodzLoc.getLatitude(), mobicaLodzLoc.getLongitude(), results);
-			((AugRealityView)augRealityView).updateBearing(results[1]);
-			
-			//double angle = ((AugRealityView)augRealityView).getAngle(location, mobicaLodzLoc);
-			//double degree = Math.toDegrees(angle);
-			//Log.e("mylocation", location.getLatitude() + " " + location.getLongitude());
-		}
-
-		@Override
-		public void onProviderDisabled(String provider) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void onProviderEnabled(String provider) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void onStatusChanged(String provider, int status, Bundle extras) {
-			// TODO Auto-generated method stub
-			
-		}
-		
+	public View getAugRealityView() {
+		return augRealityView;
 	}
+
+	public Location getMobicaLodzLoc() {
+		return mobicaLodzLoc;
+	}
+	
 }

@@ -13,10 +13,10 @@ public class GpsProvider {
 	//private static final GpsProvider instance;
 	private final String mocLocationName = "mocLocation";
 	
-	public GpsProvider(Context context, Object locListener2){
+	public GpsProvider(Context context, Object locType){
 		LocationManager locationManager = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
 		
-		LocationListener locListener = GpsListenerFactory.createListener(locListener2);
+		LocationListener locListener = GpsListenerFactory.createListener(locType);
 		
 		if (locationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
 			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,1000L,500.0f, locListener);

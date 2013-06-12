@@ -11,9 +11,8 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.View;
 
-import com.campusnavigator.view.AugRealityView;
+import com.campusnavigator.activity.providers.GpsProvider;
 import com.campusnavigator.view.CompassView;
 import com.main.campusnavigator.R;
 
@@ -21,6 +20,8 @@ public class CompassActivity extends MainActivity implements
 		SensorEventListener {
 
 	private CompassView compassView;
+
+
 
 	SensorManager sensorManager;
 	private Sensor sensorAccelerometer;
@@ -59,7 +60,6 @@ public class CompassActivity extends MainActivity implements
 		matrixI = new float[9];
 		matrixValues = new float[3];
 		
-		Intent intent = new Intent();
 
 	    Bundle extras = getIntent().getExtras();
 		float[] officeDirection = extras.getFloatArray("officeDirection");
@@ -68,26 +68,7 @@ public class CompassActivity extends MainActivity implements
 		mobicaLodzLoc.setLongitude(officeDirection[0]);
 		mobicaLodzLoc.setLatitude(officeDirection[1]);
 		
-		LocationManager locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-		LocationListener locListener = new GPSProvider();
-		
-		if (locationManager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
-			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,1000L,500.0f, locListener);
-	    	locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-		}
-		else{
-			if(locationManager.getProvider(mocLocationName) == null)
-				locationManager.addTestProvider(mocLocationName, false, false, false, false, true, true, true, 0, 5);
-			
-			//Temporary
-			//Required ACCESS_MOCK_LOCATIOn
-			locationManager.requestLocationUpdates(mocLocationName, 0, 0, locListener);
-			Location location = new Location(mocLocationName);
-			location.setLongitude(19.449553728627507);
-			location.setLatitude(51.745472398279915);
-			locationManager.setTestProviderEnabled(mocLocationName, true);
-			locationManager.setTestProviderLocation(mocLocationName, location);	
-		}
+		new GpsProvider(getApplicationContext(), this);
 	}
 
 	@Override
@@ -151,39 +132,12 @@ public class CompassActivity extends MainActivity implements
 		}
 	}
 	
-	private class GPSProvider implements LocationListener{
-
-		final float[] results= new float[3];
-		@Override
-		public void onLocationChanged(Location location) {
-			// TODO Auto-generated method stub
-			
-			Location.distanceBetween(location.getLatitude(), location.getLongitude(), mobicaLodzLoc.getLatitude(), mobicaLodzLoc.getLongitude(), results);
-			((CompassView)compassView).updateBearing(results[1]);
-			
-			//double angle = ((AugRealityView)augRealityView).getAngle(location, mobicaLodzLoc);
-			//double degree = Math.toDegrees(angle);
-			//Log.e("mylocation", location.getLatitude() + " " + location.getLongitude());
-		}
-
-		@Override
-		public void onProviderDisabled(String provider) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void onProviderEnabled(String provider) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void onStatusChanged(String provider, int status, Bundle extras) {
-			// TODO Auto-generated method stub
-			
-		}
-		
+	
+	public CompassView getCompassView() {
+		return compassView;
 	}
 
+	public Location getMobicaLodzLoc() {
+		return mobicaLodzLoc;
+	}
 }

@@ -5,7 +5,7 @@ import android.location.LocationListener;
 import android.os.Bundle;
 
 public interface GpsListenerInf extends LocationListener{ 
-
+	
 	public void onLocationChanged(Location arg0);
 	public void onProviderDisabled(String provider);
 	public void onProviderEnabled(String provider);
