@@ -51,7 +51,7 @@ public class RouteCompute extends AsyncTask<String, String, String>{
 		protected String doInBackground(String... params) {
 			String originLatLngString = LODZ_START.latitude + "," + LODZ_START.longitude;
 			String destLatLngString = LODZ_DEST.latitude + "," + LODZ_DEST.longitude;
-            String stringUrl = "http://maps.googleapis.com/maps/api/directions/json?origin=" + originLatLngString + "&destination=" + destLatLngString + "&sensor=false";
+            String stringUrl = "http://maps.googleapis.com/maps/api/directions/json?origin=" + originLatLngString + "&destination=" + destLatLngString + "&waypoints=51.1078852,17.0385376|50.0755381,14.4378005&sensor=false";
             StringBuilder response = new StringBuilder();
 			
             URL url;

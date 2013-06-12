@@ -1,4 +1,4 @@
-package com.campusnavigator.patterns;
+package com.campusnavigator.activity.listeners;
 
 import android.location.Location;
 import android.location.LocationListener;

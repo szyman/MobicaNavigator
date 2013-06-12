@@ -1,4 +1,4 @@
-package com.campusnavigator.patterns;
+package com.campusnavigator.activity.listeners;
 
 import com.campusnavigator.activity.CompassActivity;
 import com.campusnavigator.view.CompassView;

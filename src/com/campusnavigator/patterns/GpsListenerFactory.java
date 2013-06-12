@@ -3,6 +3,10 @@ package com.campusnavigator.patterns;
 import com.campusnavigator.activity.AugRealityActivity;
 import com.campusnavigator.activity.CompassActivity;
 import com.campusnavigator.activity.MapNavigatorActivity;
+import com.campusnavigator.activity.listeners.GpsAugRealityListener;
+import com.campusnavigator.activity.listeners.GpsCompasListener;
+import com.campusnavigator.activity.listeners.GpsListenerInf;
+import com.campusnavigator.activity.listeners.GpsMapListener;
 
 public class GpsListenerFactory {
 

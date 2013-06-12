@@ -1,11 +1,19 @@
 package com.campusnavigator.activity.listeners;
 
+import com.campusnavigator.activity.MapNavigatorActivity;
+
 import android.location.Location;
-import android.location.LocationListener;
 import android.os.Bundle;
 import android.util.Log;
 
-public class GpsListener implements LocationListener{
+public class GpsMapListener implements GpsListenerInf{
+
+	private MapNavigatorActivity mapActivity;
+	
+	public GpsMapListener(Object listenerType) {
+		// TODO Auto-generated constructor stub
+		mapActivity = (MapNavigatorActivity)listenerType;
+	}
 
 	@Override
 	public void onLocationChanged(Location arg0) {
