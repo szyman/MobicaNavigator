@@ -30,14 +30,14 @@
 	    android:id="@+id/radio_mobica_office"
 	    android:layout_width="match_parent"
 	    android:layout_height="wrap_content">
-	<RadioButton android:id="@+id/radio_lodz"
+<!-- 	<RadioButton android:id="@+id/radio_lodz"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:text="@string/lodz_office"/>
 	<RadioButton android:id="@+id/radio_szczecin"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:text="@string/szczecin_office"/>
+	    android:text="@string/szczecin_office"/> -->
 	    
 	</RadioGroup>
 	

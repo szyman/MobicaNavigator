@@ -65,12 +65,14 @@ public class MainActivity extends Activity implements OnClickListener{
 		}
 	}
 	
-	public void launchActivity(Class<?> class1, Object...args) {
+	public void launchActivity(Class<?> activityClass, Object...args) {
 		try{
-			Intent intent = new Intent(this, class1);
+			Intent intent = new Intent(this, activityClass);
 			for(Object object : args){
 				if(object instanceof float[])
 					intent.putExtra("officeDirection", (float[])object);
+				else if(object instanceof String)
+					intent.putExtra("officeName", (String)object);
 				else {
 					Log.e("Unatorizated type of object", "" + object);
 				}

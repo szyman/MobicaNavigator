@@ -11,12 +11,14 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import com.campusnavigator.activity.providers.GpsProvider;
 import com.campusnavigator.activity.threats.RouteCompute;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.LocationSource.OnLocationChangedListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -28,49 +30,58 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.main.campusnavigator.R;
 
 public class MapNavigatorActivity extends Activity implements
-		OnMapClickListener, OnDismissListener {
+		OnMapClickListener, OnMapLongClickListener, OnDismissListener {
 
-	private LatLng LODZ_START = new LatLng(51.7592485, 19.45598330000007);
-	private LatLng LODZ_DEST;
+	private LatLng actualLatLng = new LatLng(51.7592485, 19.45598330000007);
+
+	private LatLng destLatLng;
 
 	private GoogleMap map;
 	private List<LatLng> routePointsList;
+	private List<LatLng> routePointsListOrigin;
 	private Marker startMarker;
 	private Polyline polyline;
 	private RouteCompute routeCompute;
 	private ProgressDialog pDialog;
+	private String waypoints;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		new GpsProvider(getApplicationContext(), this);
+		
 		Bundle extras = getIntent().getExtras();
 		float[] officeDirection = extras.getFloatArray("officeDirection");
-		LODZ_DEST = new LatLng(officeDirection[1], officeDirection[0]);
+		String officeName = extras.getString("officeName");
+		
+
+		
+		destLatLng = new LatLng(officeDirection[1], officeDirection[0]);
 
 		setContentView(R.layout.map_layout);
+		((TextView)findViewById(R.id.destinationTextView)).append(officeName);
+		
 		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
 				.getMap();
 		map.setOnMapClickListener(this);
+		map.setOnMapLongClickListener(this);
 		
-		
-		new GpsProvider(getApplicationContext(), this);
-
 		pDialog = new ProgressDialog(MapNavigatorActivity.this);
 		pDialog.setOnDismissListener(this);
 
 		startMarker = map.addMarker(new MarkerOptions()
-				.position(LODZ_START)
+				.position(actualLatLng)
 				.title("Lodz")
 				.snippet("Your Poss")
 				.icon(BitmapDescriptorFactory
 						.fromResource(R.drawable.ic_launcher)));
-		map.addMarker(new MarkerOptions().position(LODZ_DEST));
+		map.addMarker(new MarkerOptions().position(destLatLng));
 
 		LatLng midleRoute = new LatLng(
-				(LODZ_START.latitude + LODZ_DEST.latitude) / 2,
-				(LODZ_START.longitude + LODZ_DEST.longitude) / 2);
-		map.moveCamera(CameraUpdateFactory.newLatLngZoom(LODZ_START, 5));
+				(actualLatLng.latitude + destLatLng.latitude) / 2,
+				(actualLatLng.longitude + destLatLng.longitude) / 2);
+		map.moveCamera(CameraUpdateFactory.newLatLngZoom(actualLatLng, 5));
 
 		// Zoom in, animating the camera.
 		map.animateCamera(CameraUpdateFactory.zoomTo(5), 2000, null);
@@ -79,22 +90,23 @@ public class MapNavigatorActivity extends Activity implements
 		 * RouteComputeThreat routeComputeThreat = new
 		 * RouteComputeThreat(LODZ_START, LODZ_DEST); routeComputeThreat.run();
 		 */
+		
+		waypoints = "";
 
-		routeCompute = new RouteCompute(this, pDialog, LODZ_START, LODZ_DEST);
+		routeCompute = new RouteCompute(this, pDialog, actualLatLng, destLatLng, waypoints);
 		routeCompute.execute();
-
+		
 	}
 
 	@Override
 	public void onMapClick(LatLng actualPos) {
-		LODZ_START = actualPos;
 		//startMarker.setPosition(actualPos);
 		//routeCompute = new RouteCompute(this, pDialog, actualPos, LODZ_DEST);
 		//routeCompute.execute();
 		
-		for(int i=0; i<routePointsList.size() - 10; i++)
+		//---------------------------------------------------------
+/*		for(int i=0; i<routePointsList.size() - 10; i++)
 			routePointsList.remove(i);
-		//polyline.setPoints(routePointsList);
 		
 		polyline.remove();
 		map.clear();
@@ -106,6 +118,35 @@ public class MapNavigatorActivity extends Activity implements
 			polyline = map.addPolyline(new PolylineOptions()
 					.add(startPoint, destPoint).width(2).color(Color.RED));
 			
+		}*/
+		
+		waypoints += actualPos.latitude + "," +actualPos.longitude + "|";
+		routeCompute = new RouteCompute(this, pDialog, actualLatLng, destLatLng, waypoints);
+		routeCompute.execute();
+		
+	}
+	
+	@Override
+	public void onMapLongClick(LatLng arg0) {
+		// TODO Auto-generated method stub
+		if (polyline != null) {
+			polyline.remove();
+			map.clear();
+			startMarker = map.addMarker(new MarkerOptions()
+					.position(actualLatLng)
+					.title("Lodz")
+					.snippet("Your Poss")
+					.icon(BitmapDescriptorFactory
+							.fromResource(R.drawable.ic_launcher)));
+			map.addMarker(new MarkerOptions().position(destLatLng));
+			polyline = null;
+		}
+		for (int i = 0; i < routePointsListOrigin.size() - 1; i++) {
+			LatLng startPoint = routePointsListOrigin.get(i);
+			LatLng destPoint = routePointsListOrigin.get(i + 1);
+			polyline = map.addPolyline(new PolylineOptions()
+					.add(startPoint, destPoint).width(2).color(Color.RED));
+			
 		}
 	}
 
@@ -114,16 +155,19 @@ public class MapNavigatorActivity extends Activity implements
 		// TODO Auto-generated method stub
 		routePointsList = new ArrayList<LatLng>(
 				routeCompute.getRoutePointsList());
+		if (routePointsListOrigin == null)
+			routePointsListOrigin = new ArrayList<LatLng>(routePointsList);
+		
 		if (polyline != null) {
 			polyline.remove();
 			map.clear();
 			startMarker = map.addMarker(new MarkerOptions()
-					.position(LODZ_START)
+					.position(actualLatLng)
 					.title("Lodz")
 					.snippet("Your Poss")
 					.icon(BitmapDescriptorFactory
 							.fromResource(R.drawable.ic_launcher)));
-			map.addMarker(new MarkerOptions().position(LODZ_DEST));
+			map.addMarker(new MarkerOptions().position(destLatLng));
 			polyline = null;
 		}
 		for (int i = 0; i < routePointsList.size() - 1; i++) {
@@ -133,6 +177,13 @@ public class MapNavigatorActivity extends Activity implements
 					.add(startPoint, destPoint).width(2).color(Color.RED));
 			
 		}
+	}
+
+	public void setActualLatLng(Location actualLatLng) {
+		this.actualLatLng = new LatLng(actualLatLng.getLatitude(), actualLatLng.getLongitude());
+		float[] distance = new float[3];
+		Location.distanceBetween(this.actualLatLng.latitude, this.actualLatLng.longitude, destLatLng.latitude, destLatLng.longitude, distance);
+		((TextView)findViewById(R.id.distanceTextView)).setText("Distance: "+distance[0]);
 	}
 
 }

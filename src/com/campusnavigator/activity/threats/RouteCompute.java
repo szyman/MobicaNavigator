@@ -24,12 +24,14 @@ public class RouteCompute extends AsyncTask<String, String, String>{
 	private ProgressDialog pDialog;
 	private LatLng LODZ_START;
 	private LatLng LODZ_DEST;
+	private String waypoints;
 	
-	public RouteCompute(MapNavigatorActivity activity, ProgressDialog pDialog, LatLng LODZ_START, LatLng LODZ_DEST){
+	public RouteCompute(MapNavigatorActivity activity, ProgressDialog pDialog, LatLng LODZ_START, LatLng LODZ_DEST, String waypoints){
 		routePointsList = new ArrayList<LatLng>();
 		this.pDialog = pDialog;
 		this.LODZ_START = LODZ_START;
 		this.LODZ_DEST = LODZ_DEST;
+		this.waypoints = waypoints;
 		pDialog.setOnDismissListener(activity);
 	}
 	
@@ -51,8 +53,10 @@ public class RouteCompute extends AsyncTask<String, String, String>{
 		protected String doInBackground(String... params) {
 			String originLatLngString = LODZ_START.latitude + "," + LODZ_START.longitude;
 			String destLatLngString = LODZ_DEST.latitude + "," + LODZ_DEST.longitude;
-            String stringUrl = "http://maps.googleapis.com/maps/api/directions/json?origin=" + originLatLngString + "&destination=" + destLatLngString + "&waypoints=51.1078852,17.0385376|50.0755381,14.4378005&sensor=false";
-            StringBuilder response = new StringBuilder();
+            //String stringUrl = "http://maps.googleapis.com/maps/api/directions/json?origin=" + originLatLngString + "&destination=" + destLatLngString + "&waypoints=51.1078852,17.0385376|50.0755381,14.4378005&sensor=false";
+
+			String stringUrl = "http://maps.googleapis.com/maps/api/directions/json?origin=" + originLatLngString + "&destination=" + destLatLngString + "&waypoints=" + waypoints +"&sensor=false";
+			StringBuilder response = new StringBuilder();
 			
             URL url;
 			try {

@@ -15,5 +15,7 @@
     <string name="szczecin_office">Szczecin office</string>
     <string name="title_activity_compas">CompasActivity</string>
     <string name="go_compas">Compas</string>
+    <string name="destination_label">Destination: </string>
+    <string name="distance_label">Distance: </string>
 
 </resources>

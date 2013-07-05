@@ -18,6 +18,7 @@ public class GpsMapListener implements GpsListenerInf{
 	@Override
 	public void onLocationChanged(Location arg0) {
 		// TODO Auto-generated method stub
+		mapActivity.setActualLatLng(arg0);
 		Log.e("location", arg0.getLongitude() + " : " + arg0.getLatitude());
 	}
 
