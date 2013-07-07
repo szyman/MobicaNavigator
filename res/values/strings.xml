@@ -17,5 +17,8 @@
     <string name="go_compas">Compas</string>
     <string name="destination_label">Destination: </string>
     <string name="distance_label">Distance: </string>
+    <string name="hints">Hints for route</string>
+    <string name="title_activity_hints">HintsActivity</string>
+    <string name="title_activity_hints_route">HintsRouteActivity</string>
 
 </resources>

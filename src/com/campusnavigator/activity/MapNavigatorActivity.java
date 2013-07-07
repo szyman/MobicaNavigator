@@ -3,14 +3,15 @@ package com.campusnavigator.activity;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
 import android.graphics.Color;
 import android.location.Location;
-import android.location.LocationListener;
 import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.campusnavigator.activity.providers.GpsProvider;
@@ -19,7 +20,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
-import com.google.android.gms.maps.LocationSource.OnLocationChangedListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -29,10 +29,10 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.main.campusnavigator.R;
 
-public class MapNavigatorActivity extends Activity implements
-		OnMapClickListener, OnMapLongClickListener, OnDismissListener {
+public class MapNavigatorActivity extends MainActivity implements
+		OnMapClickListener, OnMapLongClickListener, OnDismissListener, OnClickListener {
 
-	private LatLng actualLatLng = new LatLng(51.7592485, 19.45598330000007);
+	private LatLng actualLatLng = new LatLng(0, 0);
 
 	private LatLng destLatLng;
 
@@ -69,6 +69,9 @@ public class MapNavigatorActivity extends Activity implements
 		
 		pDialog = new ProgressDialog(MapNavigatorActivity.this);
 		pDialog.setOnDismissListener(this);
+		
+		Button hintsButton = (Button)findViewById(R.id.hintsButton);
+		hintsButton.setOnClickListener(this);
 
 		startMarker = map.addMarker(new MarkerOptions()
 				.position(actualLatLng)
@@ -148,6 +151,8 @@ public class MapNavigatorActivity extends Activity implements
 					.add(startPoint, destPoint).width(2).color(Color.RED));
 			
 		}
+		
+		waypoints = "";
 	}
 
 	@Override
@@ -184,6 +189,14 @@ public class MapNavigatorActivity extends Activity implements
 		float[] distance = new float[3];
 		Location.distanceBetween(this.actualLatLng.latitude, this.actualLatLng.longitude, destLatLng.latitude, destLatLng.longitude, distance);
 		((TextView)findViewById(R.id.distanceTextView)).setText("Distance: "+distance[0]);
+	}
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		if(v.getId() == R.id.hintsButton){
+			launchActivity(HintsRouteActivity.class, routeCompute.getHintDirection());
+		}
 	}
 
 }

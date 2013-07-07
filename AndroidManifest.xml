@@ -29,7 +29,7 @@
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <!--
          The following two permissions are not required to use
-	     Google Maps Android API v2, but are recommended.
+	     Google Maps Android API v2, but are recommended.
     -->
 
     <application
@@ -66,6 +66,14 @@
         <activity
             android:name="com.campusnavigator.activity.CompassActivity"
             android:label="@string/title_activity_compas" >
+        </activity>
+        <activity
+            android:name="com.main.campusnavigator.HintsActivity"
+            android:label="@string/title_activity_hints" >
+        </activity>
+        <activity
+            android:name="com.campusnavigator.activity.HintsRouteActivity"
+            android:label="@string/title_activity_hints_route" >
         </activity>
     </application>
 

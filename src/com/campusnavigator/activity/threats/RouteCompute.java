@@ -14,6 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.ProgressDialog;
+import android.graphics.Point;
 import android.os.AsyncTask;
 
 import com.campusnavigator.activity.MapNavigatorActivity;
@@ -26,6 +27,9 @@ public class RouteCompute extends AsyncTask<String, String, String>{
 	private LatLng LODZ_DEST;
 	private String waypoints;
 	
+	private List<String> hintDirection;
+	
+
 	public RouteCompute(MapNavigatorActivity activity, ProgressDialog pDialog, LatLng LODZ_START, LatLng LODZ_DEST, String waypoints){
 		routePointsList = new ArrayList<LatLng>();
 		this.pDialog = pDialog;
@@ -68,7 +72,6 @@ public class RouteCompute extends AsyncTask<String, String, String>{
 					while ((inputReaded = inputBuff.readLine()) !=null ){
 						response.append(inputReaded);
 					}
-					inputBuff.close();
 				}
 				
 				String jsonString = response.toString();
@@ -76,10 +79,19 @@ public class RouteCompute extends AsyncTask<String, String, String>{
 				JSONArray routeArray = routeJson.getJSONArray("routes");
 				JSONObject route = routeArray.getJSONObject(0);
 				JSONObject poly = route.getJSONObject("overview_polyline");
+				
+				JSONArray legs = route.getJSONArray("legs");
+				JSONObject leg = legs.getJSONObject(0);
+				JSONArray stepsArray = leg.getJSONArray("steps");
+				//JSONObject stepObject = stepsArray.getJSONObject(0);
+				//String hintDirection = stepObject.getString("html_instructions");
+				hintDirection = getHintDirection(stepsArray);
+				
 				String polyline = poly.getString("points");
                 routePointsList = new ArrayList<LatLng>(decodePoly(polyline));
 				
-				
+                
+
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -99,6 +111,25 @@ public class RouteCompute extends AsyncTask<String, String, String>{
 			// TODO Auto-generated method stub
 			
 			pDialog.dismiss();
+		}
+		
+		private List<String> getHintDirection(JSONArray stepsArray){
+			List<String> hintDirection = new ArrayList<String>();
+			String hint;
+			
+			for(int i=0; i < stepsArray.length(); i++){
+				JSONObject stepObject;
+				try {
+					stepObject = stepsArray.getJSONObject(i);
+					hint = stepObject.getString("html_instructions");
+					hintDirection.add(hint);
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+			return hintDirection;
 		}
 		
 	
@@ -135,5 +166,8 @@ public class RouteCompute extends AsyncTask<String, String, String>{
 
             return poly;
         }
-
+	 
+		public List<String> getHintDirection() {
+			return hintDirection;
+		}
 }

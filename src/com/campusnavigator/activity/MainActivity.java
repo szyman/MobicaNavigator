@@ -1,5 +1,8 @@
 package com.campusnavigator.activity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -73,6 +76,8 @@ public class MainActivity extends Activity implements OnClickListener{
 					intent.putExtra("officeDirection", (float[])object);
 				else if(object instanceof String)
 					intent.putExtra("officeName", (String)object);
+				else if(object instanceof List<?>)
+					intent.putStringArrayListExtra("hintsArray", (ArrayList<String>)object);
 				else {
 					Log.e("Unatorizated type of object", "" + object);
 				}
