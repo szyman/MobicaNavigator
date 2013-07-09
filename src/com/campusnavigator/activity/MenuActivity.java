@@ -12,6 +12,7 @@ import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 
 import com.campusnavigator.activity.providers.DataProvider;
+import com.campusnavigator.activity.providers.DialogProvider;
 import com.campusnavigator.view.MenuView;
 import com.main.campusnavigator.R;
 
@@ -54,20 +55,23 @@ public class MenuActivity extends MainActivity implements OnClickListener,
 
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
-		switch (v.getId()) {
-		case R.id.go_map_button:
-			launchActivity(MapNavigatorActivity.class, officeDirection, officeName);
-			break;
-		case R.id.go_compas_button:
-			launchActivity(CompassActivity.class, officeDirection);
-			break;
-		case R.id.go_augmented_reality:
-			launchActivity(AugRealityActivity.class, officeDirection);
-			break;
-		default:
-			break;
+		if (officeName != null){
+			switch (v.getId()) {
+			case R.id.go_map_button:
+				launchActivity(MapNavigatorActivity.class, officeDirection, officeName);
+				break;
+			case R.id.go_compas_button:
+				launchActivity(CompassActivity.class, officeDirection);
+				break;
+			case R.id.go_augmented_reality:
+				launchActivity(AugRealityActivity.class, officeDirection);
+				break;
+			default:
+				break;
+			}
 		}
+		else
+			DialogProvider.showDialog(this, R.string.dialog_office_set_error);
 	}
 
 	@Override

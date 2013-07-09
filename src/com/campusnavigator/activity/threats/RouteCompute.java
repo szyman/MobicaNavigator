@@ -23,7 +23,11 @@ import com.google.android.gms.maps.model.LatLng;
 public class RouteCompute extends AsyncTask<String, String, String>{
 	private List<LatLng> routePointsList;
 	private ProgressDialog pDialog;
-	private LatLng LODZ_START;
+	private LatLng pointStart;
+	public void setPointStart(LatLng pointStart) {
+		this.pointStart = pointStart;
+	}
+
 	private LatLng LODZ_DEST;
 	private String waypoints;
 	
@@ -33,7 +37,7 @@ public class RouteCompute extends AsyncTask<String, String, String>{
 	public RouteCompute(MapNavigatorActivity activity, ProgressDialog pDialog, LatLng LODZ_START, LatLng LODZ_DEST, String waypoints){
 		routePointsList = new ArrayList<LatLng>();
 		this.pDialog = pDialog;
-		this.LODZ_START = LODZ_START;
+		this.pointStart = LODZ_START;
 		this.LODZ_DEST = LODZ_DEST;
 		this.waypoints = waypoints;
 		pDialog.setOnDismissListener(activity);
@@ -55,7 +59,7 @@ public class RouteCompute extends AsyncTask<String, String, String>{
 
 		@Override
 		protected String doInBackground(String... params) {
-			String originLatLngString = LODZ_START.latitude + "," + LODZ_START.longitude;
+			String originLatLngString = pointStart.latitude + "," + pointStart.longitude;
 			String destLatLngString = LODZ_DEST.latitude + "," + LODZ_DEST.longitude;
             //String stringUrl = "http://maps.googleapis.com/maps/api/directions/json?origin=" + originLatLngString + "&destination=" + destLatLngString + "&waypoints=51.1078852,17.0385376|50.0755381,14.4378005&sensor=false";
 
@@ -104,6 +108,12 @@ public class RouteCompute extends AsyncTask<String, String, String>{
 			}
 
 			return null;
+		}
+		
+		@Override
+		protected void onCancelled(String result) {
+			// TODO Auto-generated method stub
+			super.onCancelled(result);
 		}
 		
 		@Override

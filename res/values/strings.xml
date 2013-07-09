@@ -10,15 +10,19 @@
     <string name="go_map_string">Navigate on the map</string>
     <string name="go_augmented_reality">Augmented Reality</string>
     <string name="accept_button">Accept</string>
-    <string name="chose_string">Select mobica office from the list</string>
+    <string name="chose_string">Select mobica office:</string>
     <string name="lodz_office">Lodz office</string>
     <string name="szczecin_office">Szczecin office</string>
     <string name="title_activity_compas">CompasActivity</string>
     <string name="go_compas">Compas</string>
     <string name="destination_label">Destination: </string>
     <string name="distance_label">Distance: </string>
-    <string name="hints">Hints for route</string>
+    <string name="hints_button">Hints for route</string>
+    <string name="map_refresh_button">Refresh</string>
     <string name="title_activity_hints">HintsActivity</string>
     <string name="title_activity_hints_route">HintsRouteActivity</string>
+    <string name="dialog_internet_error">No internet connection.</string>
+    <string name="dialog_office_set_error">Neither office selected.</string>
+    
 
 </resources>
