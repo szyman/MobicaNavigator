@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.campusnavigator.activity.providers.DialogProvider;
 import com.campusnavigator.activity.providers.GpsProvider;
 import com.campusnavigator.activity.threats.RouteCompute;
+import com.campusnavigator.model.DialogType;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
@@ -51,18 +52,17 @@ public class MapNavigatorActivity extends MainActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		new GpsProvider(getApplicationContext(), this);
+		
+		setContentView(R.layout.map_layout);
+		new GpsProvider(this);
 		
 		Bundle extras = getIntent().getExtras();
 		float[] officeDirection = extras.getFloatArray("officeDirection");
 		String officeName = extras.getString("officeName");
 		
-
-		
 		destLatLng = new LatLng(officeDirection[1], officeDirection[0]);
 
-		setContentView(R.layout.map_layout);
+		
 		((TextView)findViewById(R.id.destinationTextView)).append(officeName);
 		
 		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
@@ -183,7 +183,7 @@ public class MapNavigatorActivity extends MainActivity implements
 			}
 		}
 		else{
-			DialogProvider.showDialog(this, R.string.dialog_internet_error);
+			DialogProvider.showDialog(DialogType.ERROR, this, R.string.dialog_internet_error);
 		}
 
 	}
@@ -219,7 +219,7 @@ public class MapNavigatorActivity extends MainActivity implements
 			if(routeCompute.getHintDirection() != null)
 				launchActivity(HintsRouteActivity.class, routeCompute.getHintDirection());
 			else
-				DialogProvider.showDialog(this, R.string.dialog_internet_error);
+				DialogProvider.showDialog(DialogType.ERROR, this, R.string.dialog_internet_error);
 		}
 		else if(v.getId() == R.id.refreshMapButton){
 			routeCompute = new RouteCompute(this, pDialog, actualLatLng, destLatLng, waypoints);

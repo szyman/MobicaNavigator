@@ -68,7 +68,7 @@ public class CompassActivity extends MainActivity implements
 		mobicaLodzLoc.setLongitude(officeDirection[0]);
 		mobicaLodzLoc.setLatitude(officeDirection[1]);
 		
-		new GpsProvider(getApplicationContext(), this);
+		new GpsProvider(this);
 	}
 
 	@Override

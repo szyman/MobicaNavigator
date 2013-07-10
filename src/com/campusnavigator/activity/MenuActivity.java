@@ -13,6 +13,7 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 
 import com.campusnavigator.activity.providers.DataProvider;
 import com.campusnavigator.activity.providers.DialogProvider;
+import com.campusnavigator.model.DialogType;
 import com.campusnavigator.view.MenuView;
 import com.main.campusnavigator.R;
 
@@ -71,7 +72,7 @@ public class MenuActivity extends MainActivity implements OnClickListener,
 			}
 		}
 		else
-			DialogProvider.showDialog(this, R.string.dialog_office_set_error);
+			DialogProvider.showDialog(DialogType.ERROR, this, R.string.dialog_office_set_error);
 	}
 
 	@Override

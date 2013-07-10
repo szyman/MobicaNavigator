@@ -1,5 +1,7 @@
 package com.campusnavigator.activity.providers;
 
+import com.campusnavigator.model.DialogType;
+
 import android.R;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
@@ -28,10 +30,10 @@ public class DialogProvider extends DialogFragment {
 		return builder.create();
 	}
 
-	public static void showDialog(Context context, int message) {
+	public static void showDialog(DialogType type, Context context, int message) {
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
-		builder.setTitle("Error");
+		builder.setTitle(type.toString());
 		builder.setMessage(message);
 		builder.setPositiveButton(R.string.ok,
 				new DialogInterface.OnClickListener() {

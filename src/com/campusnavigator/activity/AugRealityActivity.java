@@ -72,7 +72,7 @@ public class AugRealityActivity extends MainActivity implements SensorEventListe
 		setContentView(augRealityView);
 		addContentView(((AugRealityView)augRealityView).getMarkersView(), new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		
-		new GpsProvider(getApplicationContext(), this);
+		new GpsProvider(this);
 	
 	}
 	
