@@ -7,14 +7,15 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.ProgressDialog;
-import android.graphics.Point;
 import android.os.AsyncTask;
 
 import com.campusnavigator.activity.MapNavigatorActivity;
@@ -22,6 +23,9 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class RouteCompute extends AsyncTask<String, String, String>{
 	private List<LatLng> routePointsList;
+	private Map<LatLng, String> routeInformation;
+
+
 	private ProgressDialog pDialog;
 	private LatLng pointStart;
 	public void setPointStart(LatLng pointStart) {
@@ -41,17 +45,21 @@ public class RouteCompute extends AsyncTask<String, String, String>{
 		this.LODZ_DEST = LODZ_DEST;
 		this.waypoints = waypoints;
 		pDialog.setOnDismissListener(activity);
+		routeInformation = new LinkedHashMap<LatLng, String>();
 	}
 	
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            routePointsList = new ArrayList<LatLng>();
             pDialog.setMessage("Loading route. Please wait...");
             pDialog.setIndeterminate(false);
             pDialog.setCancelable(false);
             pDialog.show();
         }
+        
+    	public Map<LatLng, String> getRouteInformation() {
+    		return routeInformation;
+    	}
 		
 		public List<LatLng> getRoutePointsList() {
 			return routePointsList;
@@ -65,7 +73,7 @@ public class RouteCompute extends AsyncTask<String, String, String>{
 
 			String stringUrl = "http://maps.googleapis.com/maps/api/directions/json?origin=" + originLatLngString + "&destination=" + destLatLngString + "&waypoints=" + waypoints +"&sensor=false";
 			StringBuilder response = new StringBuilder();
-			
+			routePointsList = new ArrayList<LatLng>();
             URL url;
 			try {
 				url = new URL(stringUrl);
@@ -85,15 +93,30 @@ public class RouteCompute extends AsyncTask<String, String, String>{
 				JSONObject poly = route.getJSONObject("overview_polyline");
 				
 				JSONArray legs = route.getJSONArray("legs");
-				JSONObject leg = legs.getJSONObject(0);
-				JSONArray stepsArray = leg.getJSONArray("steps");
+				int legsCount = legs.length();
+				
+				//JSONObject leg2 = legs.getJSONObject(1);
+
+				for(int j = 0; j < legsCount; j++){
+					JSONObject leg = legs.getJSONObject(j);
+					JSONArray stepsArray = leg.getJSONArray("steps");
+					for(int i=0; i<stepsArray.length(); i++){
+						JSONObject step = stepsArray.getJSONObject(i);
+						String html_instruction = step.getString("html_instructions");
+						JSONObject start_location =  step.getJSONObject("start_location");
+						
+						LatLng start_locationLatLng = new LatLng(start_location.getDouble("lat"), start_location.getDouble("lng"));
+						routeInformation.put(start_locationLatLng, html_instruction);
+					}
+					hintDirection = getHintDirection(stepsArray);
+				}
+				
 				//JSONObject stepObject = stepsArray.getJSONObject(0);
 				//String hintDirection = stepObject.getString("html_instructions");
-				hintDirection = getHintDirection(stepsArray);
+				
 				
 				String polyline = poly.getString("points");
                 routePointsList = new ArrayList<LatLng>(decodePoly(polyline));
-				
                 
 
 			} catch (MalformedURLException e) {

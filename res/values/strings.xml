@@ -24,5 +24,6 @@
     <string name="dialog_internet_error">No internet connection.</string>
     <string name="dialog_office_set_error">Neither office selected.</string>
     <string name="dialog_moc_location_info">Moc location mode enabled.</string>
+   	<string name="map_revert_button">Revert</string>
 
 </resources>

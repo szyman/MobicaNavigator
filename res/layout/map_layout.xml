@@ -36,4 +36,12 @@
         android:layout_toRightOf="@+id/hintsButton"
         android:text="@string/map_refresh_button" />
 
+    <Button
+        android:id="@+id/revertMapButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/map"
+        android:text="@string/map_revert_button" />
+
 </RelativeLayout>

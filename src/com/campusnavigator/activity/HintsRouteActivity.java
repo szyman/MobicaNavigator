@@ -2,14 +2,11 @@ package com.campusnavigator.activity;
 
 import java.util.ArrayList;
 
-import com.main.campusnavigator.R;
-import com.main.campusnavigator.R.layout;
-import com.main.campusnavigator.R.menu;
-
-import android.os.Bundle;
 import android.app.Activity;
-import android.view.Menu;
+import android.os.Bundle;
 import android.webkit.WebView;
+
+import com.main.campusnavigator.R;
 
 public class HintsRouteActivity extends Activity {
 

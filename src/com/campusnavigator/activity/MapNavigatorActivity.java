@@ -1,7 +1,10 @@
 package com.campusnavigator.activity;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -20,7 +23,6 @@ import com.campusnavigator.activity.threats.RouteCompute;
 import com.campusnavigator.model.DialogType;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -31,8 +33,8 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.main.campusnavigator.R;
 
-public class MapNavigatorActivity extends MainActivity implements
-		OnMapClickListener, OnMapLongClickListener, OnDismissListener, OnClickListener {
+public class MapNavigatorActivity extends MainActivity 
+	implements OnMapLongClickListener, OnDismissListener, OnClickListener {
 
 	private LatLng actualLatLng = new LatLng(0,0);
 
@@ -42,10 +44,15 @@ public class MapNavigatorActivity extends MainActivity implements
 	private List<LatLng> routePointsList;
 	private List<LatLng> routePointsListOrigin;
 	private Marker startMarker;
+	private Marker destMarker;
+	private List<MarkerOptions> markersInfoRoute;
+	private LatLng tapPos;
 	private Polyline polyline;
 	private RouteCompute routeCompute;
 	private ProgressDialog pDialog;
 	private String waypoints;
+	
+	private List<LatLng> waypointsArray;
 
 	private Button hintsButton;
 	
@@ -67,7 +74,7 @@ public class MapNavigatorActivity extends MainActivity implements
 		
 		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
 				.getMap();
-		map.setOnMapClickListener(this);
+
 		map.setOnMapLongClickListener(this);
 		
 		pDialog = new ProgressDialog(MapNavigatorActivity.this);
@@ -77,8 +84,11 @@ public class MapNavigatorActivity extends MainActivity implements
 		
 		Button refreshButton = (Button)findViewById(R.id.refreshMapButton);
 		refreshButton.setOnClickListener(this);
+		
+		Button revertButton = (Button)findViewById(R.id.revertMapButton);
+		revertButton.setOnClickListener(this);
 
-		map.addMarker(new MarkerOptions().position(destLatLng));
+		destMarker = map.addMarker(new MarkerOptions().position(destLatLng).title(officeName));
 		map.moveCamera(CameraUpdateFactory.newLatLngZoom(destLatLng, 5));
 		
 		//LatLng midleRoute = new LatLng(
@@ -93,44 +103,23 @@ public class MapNavigatorActivity extends MainActivity implements
 		 * RouteComputeThreat routeComputeThreat = new
 		 * RouteComputeThreat(LODZ_START, LODZ_DEST); routeComputeThreat.run();
 		 */
-		
+		waypointsArray = new ArrayList<LatLng>();
 		waypoints = "";
 		
 		//DialogProvider alertDialog = new DialogProvider();
 		//alertDialog.showDialog(this);		
 	}
 
-	@Override
-	public void onMapClick(LatLng actualPos) {
-		//startMarker.setPosition(actualPos);
-		//routeCompute = new RouteCompute(this, pDialog, actualPos, LODZ_DEST);
-		//routeCompute.execute();
-		
-		//---------------------------------------------------------
-/*		for(int i=0; i<routePointsList.size() - 10; i++)
-			routePointsList.remove(i);
-		
-		polyline.remove();
-		map.clear();
-		int size = routePointsList.size() + 10 - routePointsList.size(); 
-		
-		for (int i = 0; i < size; i++) {
-			LatLng startPoint = routePointsList.get(i);
-			LatLng destPoint = routePointsList.get(i + 1);
-			polyline = map.addPolyline(new PolylineOptions()
-					.add(startPoint, destPoint).width(2).color(Color.RED));
-			
-		}*/
-		
-		waypoints += actualPos.latitude + "," +actualPos.longitude + "|";
+	
+	public void onMapLongClick(LatLng tapPos) {
+		waypoints += tapPos.latitude + "," +tapPos.longitude + "|";
 		routeCompute = new RouteCompute(this, pDialog, actualLatLng, destLatLng, waypoints);
 		routeCompute.execute();
 		
+		this.tapPos = tapPos;
 	}
 	
-	@Override
-	public void onMapLongClick(LatLng arg0) {
-		// TODO Auto-generated method stub
+	private void revertChanges(){
 		if (polyline != null) {
 			polyline.remove();
 			map.clear();
@@ -139,17 +128,24 @@ public class MapNavigatorActivity extends MainActivity implements
 					.title("You")
 					.icon(BitmapDescriptorFactory
 							.fromResource(R.drawable.ic_launcher)));
+			
 			map.addMarker(new MarkerOptions().position(destLatLng));
 			polyline = null;
+			waypointsArray.clear();
+			
+			for(MarkerOptions markerOption : markersInfoRoute){
+				map.addMarker(markerOption);
+			}
 		}
-		for (int i = 0; i < routePointsListOrigin.size() - 1; i++) {
-			LatLng startPoint = routePointsListOrigin.get(i);
-			LatLng destPoint = routePointsListOrigin.get(i + 1);
-			polyline = map.addPolyline(new PolylineOptions()
-					.add(startPoint, destPoint).width(2).color(Color.RED));
+		if(routePointsListOrigin != null){
+			for (int i = 0; i < routePointsListOrigin.size() - 1; i++) {
+				LatLng startPoint = routePointsListOrigin.get(i);
+				LatLng destPoint = routePointsListOrigin.get(i + 1);
+				polyline = map.addPolyline(new PolylineOptions()
+						.add(startPoint, destPoint).width(2).color(Color.RED));		
+			}
 			
 		}
-		
 		waypoints = "";
 	}
 
@@ -167,11 +163,10 @@ public class MapNavigatorActivity extends MainActivity implements
 				map.clear();
 				startMarker = map.addMarker(new MarkerOptions()
 						.position(actualLatLng)
-						.title("Lodz")
-						.snippet("Your Poss")
+						.title("You")
 						.icon(BitmapDescriptorFactory
 								.fromResource(R.drawable.ic_launcher)));
-				map.addMarker(new MarkerOptions().position(destLatLng));
+				map.addMarker(new MarkerOptions().position(destLatLng).title(destMarker.getTitle()));
 				polyline = null;
 			}
 			for (int i = 0; i < routePointsList.size() - 1; i++) {
@@ -181,6 +176,17 @@ public class MapNavigatorActivity extends MainActivity implements
 						.add(startPoint, destPoint).width(2).color(Color.RED));
 				
 			}
+			
+			if(tapPos != null &&
+					tapPos != startMarker.getPosition() &&
+					tapPos != destMarker.getPosition()){
+				waypointsArray.add(tapPos);
+				tapPos = null;
+			}
+			
+			for(LatLng waypoint : waypointsArray)
+				map.addMarker(new MarkerOptions().position(waypoint));
+			addInfoToRoute(routeCompute.getRouteInformation());
 		}
 		else{
 			DialogProvider.showDialog(DialogType.ERROR, this, R.string.dialog_internet_error);
@@ -206,10 +212,35 @@ public class MapNavigatorActivity extends MainActivity implements
 			map.moveCamera(CameraUpdateFactory.newLatLngZoom(this.actualLatLng, 5));
 			hintsButton.setOnClickListener(this);
 		}
-		else
+		else{
 			startMarker.setPosition(this.actualLatLng);
-		
-		
+			//getRouteInfo(routeCompute.getRouteInformation(), this.actualLatLng);
+		}
+	}
+	
+	private void addInfoToRoute(Map<LatLng, String> routeInfoMap){
+		Iterator<Entry<LatLng, String>> itStart = routeInfoMap.entrySet().iterator();
+		boolean isFisrtInitMap = false;
+		if (markersInfoRoute == null){
+			markersInfoRoute = new ArrayList<MarkerOptions>();
+			isFisrtInitMap = true;
+		}
+		while(itStart.hasNext()){
+			Map.Entry<LatLng, String> entryStart = (Map.Entry<LatLng, String>) itStart.next();
+			LatLng latlngStart = entryStart.getKey();
+			MarkerOptions marker = new MarkerOptions().position(latlngStart).icon(BitmapDescriptorFactory
+					.fromResource(R.drawable.info_icon)).title(entryStart.getValue()); 
+			if(isFisrtInitMap)
+				markersInfoRoute.add(marker);
+			map.addMarker(marker);
+		}
+	}
+	
+	private List<String> getHints(Map<LatLng, String> routeInfoMap){
+		List<String> hintsList = new ArrayList<String>();
+		for (String hint : routeInfoMap.values())
+			hintsList.add(hint);
+		return hintsList;
 	}
 
 	@Override
@@ -217,13 +248,16 @@ public class MapNavigatorActivity extends MainActivity implements
 		// TODO Auto-generated method stub
 		if(v.getId() == R.id.hintsButton){
 			if(routeCompute.getHintDirection() != null)
-				launchActivity(HintsRouteActivity.class, routeCompute.getHintDirection());
+				launchActivity(HintsRouteActivity.class, getHints(routeCompute.getRouteInformation()));
 			else
 				DialogProvider.showDialog(DialogType.ERROR, this, R.string.dialog_internet_error);
 		}
 		else if(v.getId() == R.id.refreshMapButton){
 			routeCompute = new RouteCompute(this, pDialog, actualLatLng, destLatLng, waypoints);
 			routeCompute.execute();
+		}
+		else if(v.getId() == R.id.revertMapButton){
+			revertChanges();
 		}
 	}
 	
