@@ -11,7 +11,7 @@
         android:id="@+id/include1"
         layout="@layout/infobar" />
 	<view 
-	    class="com.campusnavigator.view.CompassView"
+	    class="com.mobicanavigator.view.CompassView"
 	    android:id="@+id/compassRoute"
 	    android:layout_width="fill_parent"
 	    android:layout_height="fill_parent"

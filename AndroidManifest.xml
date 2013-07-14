@@ -38,7 +38,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.campusnavigator.activity.MainActivity"
+            android:name="com.mobicanavigator.activity.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -47,15 +47,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.campusnavigator.activity.MenuActivity"
+            android:name="com.mobicanavigator.activity.MenuActivity"
             android:label="@string/title_activity_menu" >
         </activity>
         <activity
-            android:name="com.campusnavigator.activity.AugRealityActivity"
+            android:name="com.mobicanavigator.activity.AugRealityActivity"
             android:label="@string/title_activity_aug" >
         </activity>
         <activity
-            android:name="com.campusnavigator.activity.MapNavigatorActivity"
+            android:name="com.mobicanavigator.activity.MapNavigatorActivity"
             android:label="@string/title_activity_map" >
         </activity>
 
@@ -64,7 +64,7 @@
             android:value="AIzaSyBVFnmGzODx6VMYyqDnzrEMZNIERC4odAo" />
 
         <activity
-            android:name="com.campusnavigator.activity.CompassActivity"
+            android:name="com.mobicanavigator.activity.CompassActivity"
             android:label="@string/title_activity_compas" >
         </activity>
         <activity
@@ -72,7 +72,7 @@
             android:label="@string/title_activity_hints" >
         </activity>
         <activity
-            android:name="com.campusnavigator.activity.HintsRouteActivity"
+            android:name="com.mobicanavigator.activity.HintsRouteActivity"
             android:label="@string/title_activity_hints_route" >
         </activity>
     </application>
