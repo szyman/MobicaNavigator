@@ -8,7 +8,7 @@ import android.webkit.WebView;
 
 import com.main.campusnavigator.R;
 
-public class HintsRouteActivity extends Activity {
+public class HintsRouteActivity extends MainActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
