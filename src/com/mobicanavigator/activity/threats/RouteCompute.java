@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -16,6 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -32,20 +34,24 @@ public class RouteCompute extends AsyncTask<String, String, String>{
 		this.pointStart = pointStart;
 	}
 
-	private LatLng LODZ_DEST;
+	private LatLng officeDest;
 	private String waypoints;
 	
 	private List<String> hintDirection;
+	
+	private RouteCompute routeCompute;
 	
 
 	public RouteCompute(MapNavigatorActivity activity, ProgressDialog pDialog, LatLng LODZ_START, LatLng LODZ_DEST, String waypoints){
 		routePointsList = new ArrayList<LatLng>();
 		this.pDialog = pDialog;
 		this.pointStart = LODZ_START;
-		this.LODZ_DEST = LODZ_DEST;
+		this.officeDest = LODZ_DEST;
 		this.waypoints = waypoints;
 		pDialog.setOnDismissListener(activity);
 		routeInformation = new LinkedHashMap<LatLng, String>();
+		
+		routeCompute = this;
 	}
 	
         @Override
@@ -53,7 +59,16 @@ public class RouteCompute extends AsyncTask<String, String, String>{
             super.onPreExecute();
             pDialog.setMessage("Loading route. Please wait...");
             pDialog.setIndeterminate(false);
-            pDialog.setCancelable(false);
+            pDialog.setCancelable(true);
+            pDialog.setOnCancelListener(new DialogInterface.OnCancelListener(){
+
+				@Override
+				public void onCancel(DialogInterface arg0) {
+					// TODO Auto-generated method stub
+					routeCompute.cancel(true);
+				}
+            	
+            });
             pDialog.show();
         }
         
@@ -68,7 +83,7 @@ public class RouteCompute extends AsyncTask<String, String, String>{
 		@Override
 		protected String doInBackground(String... params) {
 			String originLatLngString = pointStart.latitude + "," + pointStart.longitude;
-			String destLatLngString = LODZ_DEST.latitude + "," + LODZ_DEST.longitude;
+			String destLatLngString = officeDest.latitude + "," + officeDest.longitude;
             //String stringUrl = "http://maps.googleapis.com/maps/api/directions/json?origin=" + originLatLngString + "&destination=" + destLatLngString + "&waypoints=51.1078852,17.0385376|50.0755381,14.4378005&sensor=false";
 
 			String stringUrl = "http://maps.googleapis.com/maps/api/directions/json?origin=" + originLatLngString + "&destination=" + destLatLngString + "&waypoints=" + waypoints +"&sensor=false";
@@ -129,6 +144,8 @@ public class RouteCompute extends AsyncTask<String, String, String>{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
+
 
 			return null;
 		}

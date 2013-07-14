@@ -12,6 +12,7 @@ import android.content.DialogInterface.OnDismissListener;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -261,5 +262,4 @@ public class MapNavigatorActivity extends MainActivity
 		}
 	}
 	
-
 }

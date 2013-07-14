@@ -62,10 +62,10 @@ public class MenuActivity extends MainActivity implements OnClickListener,
 				launchActivity(MapNavigatorActivity.class, officeDirection, officeName);
 				break;
 			case R.id.go_compas_button:
-				launchActivity(CompassActivity.class, officeDirection);
+				launchActivity(CompassActivity.class, officeDirection, officeName);
 				break;
 			case R.id.go_augmented_reality:
-				launchActivity(AugRealityActivity.class, officeDirection);
+				launchActivity(AugRealityActivity.class, officeDirection, officeName);
 				break;
 			default:
 				break;

@@ -25,5 +25,6 @@
     <string name="dialog_office_set_error">Neither office selected.</string>
     <string name="dialog_moc_location_info">Moc location mode enabled.</string>
    	<string name="map_revert_button">Revert</string>
+   	<string name="author">Coded by: Marek Szymanski</string>
 
 </resources>

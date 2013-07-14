@@ -11,6 +11,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Menu;
+import android.widget.TextView;
 
 import com.main.campusnavigator.R;
 import com.mobicanavigator.activity.providers.GpsProvider;
@@ -20,8 +21,6 @@ public class CompassActivity extends MainActivity implements
 		SensorEventListener {
 
 	private CompassView compassView;
-
-
 
 	SensorManager sensorManager;
 	private Sensor sensorAccelerometer;
@@ -36,16 +35,20 @@ public class CompassActivity extends MainActivity implements
 	
 	final float alpha = 0.8f;
 	
-	private LocationManager locationManager;
-	private final String mocLocationName = "mocLocation";
-	private Location mobicaLodzLoc;
+	private Location officeLoc;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_compass);
-
+		new GpsProvider(this);
 		compassView = (CompassView) findViewById(R.id.compassRoute);
+		
+	    Bundle extras = getIntent().getExtras();
+		float[] officeDirection = extras.getFloatArray("officeDirection");
+		String officeName = extras.getString("officeName");
+		
+		((TextView)findViewById(R.id.destinationTextView)).append(officeName);
 
 		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 		sensorAccelerometer = sensorManager
@@ -61,14 +64,11 @@ public class CompassActivity extends MainActivity implements
 		matrixValues = new float[3];
 		
 
-	    Bundle extras = getIntent().getExtras();
-		float[] officeDirection = extras.getFloatArray("officeDirection");
+		officeLoc = new Location("officeLoc");
+		officeLoc.setLongitude(officeDirection[0]);
+		officeLoc.setLatitude(officeDirection[1]);
 		
-		mobicaLodzLoc = new Location("mobicaLodzLoc");
-		mobicaLodzLoc.setLongitude(officeDirection[0]);
-		mobicaLodzLoc.setLatitude(officeDirection[1]);
 		
-		new GpsProvider(this);
 	}
 
 	@Override
@@ -132,12 +132,16 @@ public class CompassActivity extends MainActivity implements
 		}
 	}
 	
+	public void updateDistance(float distance){
+		((TextView)findViewById(R.id.distanceTextView)).setText("Distance: "+distance);
+	}
+	
 	
 	public CompassView getCompassView() {
 		return compassView;
 	}
 
 	public Location getMobicaLodzLoc() {
-		return mobicaLodzLoc;
+		return officeLoc;
 	}
 }

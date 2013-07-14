@@ -9,29 +9,18 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 
-import com.main.campusnavigator.R;
-
-public class MainActivity extends Activity implements OnClickListener{
+public class MainActivity extends Activity{
 	
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//launchActivity(MenuActivity.class);
 		setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        
-		setContentView(R.layout.activity_main);
-		
-		Button acceptButton = (Button)findViewById(R.id.buttonAccept);
-		acceptButton.setOnClickListener(this);
 	}
 
 	@Override
@@ -92,19 +81,4 @@ public class MainActivity extends Activity implements OnClickListener{
 			Log.d("launchActivity", ex.toString());
 		}
 	}
-	
-
-	@Override
-	public void onClick(View v) {
-		// TODO Auto-generated method stub
-		switch (v.getId()) {
-		case R.id.buttonAccept:
-			launchActivity(MenuActivity.class);
-			finish();
-			break;
-		default:
-			break;
-		}
-	}
-
 }

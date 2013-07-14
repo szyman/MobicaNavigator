@@ -10,7 +10,7 @@ import android.util.Log;
 public class GpsCompasListener implements GpsListenerInf {
 
 	private CompassActivity compassActivity;
-	final float[] results= new float[3];
+	float[] results;
 	public GpsCompasListener(Object listenerType){
 		compassActivity = (CompassActivity)listenerType;
 		
@@ -19,8 +19,10 @@ public class GpsCompasListener implements GpsListenerInf {
 	@Override
 	public void onLocationChanged(Location location) {
 		// TODO Auto-generated method stub
+		results= new float[3];
 		Log.e("compasGPS", location.getLatitude() + " : " + location.getLongitude());
 		Location.distanceBetween(location.getLatitude(), location.getLongitude(), compassActivity.getMobicaLodzLoc().getLatitude(), compassActivity.getMobicaLodzLoc().getLongitude(), results);
+		compassActivity.updateDistance(results[0]);
 		((CompassView)compassActivity.getCompassView()).updateBearing(results[0]);
 	}
 
