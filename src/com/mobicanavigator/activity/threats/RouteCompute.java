@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -42,11 +41,11 @@ public class RouteCompute extends AsyncTask<String, String, String>{
 	private RouteCompute routeCompute;
 	
 
-	public RouteCompute(MapNavigatorActivity activity, ProgressDialog pDialog, LatLng LODZ_START, LatLng LODZ_DEST, String waypoints){
+	public RouteCompute(MapNavigatorActivity activity, ProgressDialog pDialog, LatLng pointStart, LatLng officeDest, String waypoints){
 		routePointsList = new ArrayList<LatLng>();
 		this.pDialog = pDialog;
-		this.pointStart = LODZ_START;
-		this.officeDest = LODZ_DEST;
+		this.pointStart = pointStart;
+		this.officeDest = officeDest;
 		this.waypoints = waypoints;
 		pDialog.setOnDismissListener(activity);
 		routeInformation = new LinkedHashMap<LatLng, String>();
@@ -126,10 +125,6 @@ public class RouteCompute extends AsyncTask<String, String, String>{
 					hintDirection = getHintDirection(stepsArray);
 				}
 				
-				//JSONObject stepObject = stepsArray.getJSONObject(0);
-				//String hintDirection = stepObject.getString("html_instructions");
-				
-				
 				String polyline = poly.getString("points");
                 routePointsList = new ArrayList<LatLng>(decodePoly(polyline));
                 
@@ -144,9 +139,6 @@ public class RouteCompute extends AsyncTask<String, String, String>{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-
-
 			return null;
 		}
 		
@@ -159,7 +151,6 @@ public class RouteCompute extends AsyncTask<String, String, String>{
 		@Override
 		protected void onPostExecute(String result) {
 			// TODO Auto-generated method stub
-			
 			pDialog.dismiss();
 		}
 		

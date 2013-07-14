@@ -1,14 +1,10 @@
 package com.mobicanavigator.activity;
 
-import android.content.Context;
-import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.widget.TextView;
@@ -124,9 +120,9 @@ public class CompassActivity extends MainActivity implements
 		if (success) {
 			SensorManager.getOrientation(matrixR, matrixValues);
 
-			double azimuth = Math.toDegrees(matrixValues[0]);
-			double pitch = Math.toDegrees(matrixValues[1]);
-			double roll = Math.toDegrees(matrixValues[2]);
+			//double azimuth = Math.toDegrees(matrixValues[0]);
+			//double pitch = Math.toDegrees(matrixValues[1]);
+			//double roll = Math.toDegrees(matrixValues[2]);
 
 			compassView.update(matrixValues[0]);
 		}

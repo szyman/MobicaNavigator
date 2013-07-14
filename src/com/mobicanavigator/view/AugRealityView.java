@@ -23,6 +23,7 @@ public class AugRealityView extends SurfaceView implements
 	
 	private float direction;
 	private float bearing;
+	private String officeName;
 
 	public AugRealityView(Context context) {
 		super(context);
@@ -127,6 +128,14 @@ public class AugRealityView extends SurfaceView implements
 		getMarkersView().callToInvalidate();
 	}
 
+	public String getOfficeName() {
+		return officeName;
+	}
+
+	public void setOfficeName(String officeName) {
+		this.officeName = officeName;
+	}
+
 	private class MarkersView extends View {
 
 		public MarkersView(Context context) {
@@ -138,7 +147,7 @@ public class AugRealityView extends SurfaceView implements
 			invalidate();
 		}
 		
-		private float north;
+		//private float north;
 
 		@Override
 		protected void onDraw(Canvas canvas) {
@@ -154,11 +163,8 @@ public class AugRealityView extends SurfaceView implements
 			  Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 			  paint.setStyle(Paint.Style.STROKE);
 			  paint.setStrokeWidth(5);
-			  paint.setColor(Color.WHITE);
 			  
 			  //canvas.drawCircle(w/2, h/2, r, paint);
-			  
-			  paint.setColor(Color.RED);
 			  
 			  float test1 = (float)(w/2 - r * Math.sin(-direction));
 			  float test2 = (float)(h/2 - r * Math.cos(-direction));
@@ -166,7 +172,7 @@ public class AugRealityView extends SurfaceView implements
 			  Log.e("test1", ""+test1);
 			  Log.e("test2", ""+test2);
 			  
-			  float mobicaPoint = Math.round((float)(w/2 - r * Math.sin(-bearing)));
+			  //float mobicaPoint = Math.round((float)(w/2 - r * Math.sin(-bearing)));
 			  
 				paint.setColor(Color.RED);
 				//canvas.drawLine(w / 2, h / 2,
@@ -185,6 +191,9 @@ public class AugRealityView extends SurfaceView implements
 				canvas.drawCircle((float) (w / 2 + r * Math.sin(-direction - bearing)),
 						canvas.getHeight() / 2,
 						20, paint);
+				
+				paint.setTextSize(40);
+				canvas.drawText(officeName, 50, 50, paint);
 			  //Log.e("direction", Math.sin(-direction) + " " + Math.cos(-direction));
 		}
 

@@ -51,8 +51,8 @@ public class CompassView extends View {
 		paint.setStrokeWidth(5);
 		paint.setColor(Color.WHITE);
 		
-		float bearingOfficeX = (float) (w / 2 + r * Math.sin(-bearing));
-		float bearingOfficeY = (float) (h / 2 - r * Math.cos(-bearing));
+		//float bearingOfficeX = (float) (w / 2 + r * Math.sin(-bearing));
+		//float bearingOfficeY = (float) (h / 2 - r * Math.cos(-bearing));
 
 		canvas.drawCircle(w / 2, h / 2, r, paint);
 

@@ -12,7 +12,6 @@ import android.content.DialogInterface.OnDismissListener;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -75,7 +74,9 @@ public class MapNavigatorActivity extends MainActivity
 		
 		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
 				.getMap();
-
+		
+		map.setMyLocationEnabled(true);
+		
 		map.setOnMapLongClickListener(this);
 		
 		pDialog = new ProgressDialog(MapNavigatorActivity.this);
@@ -100,15 +101,10 @@ public class MapNavigatorActivity extends MainActivity
 		// Zoom in, animating the camera.
 		map.animateCamera(CameraUpdateFactory.zoomTo(5), 2000, null);
 
-		/*
-		 * RouteComputeThreat routeComputeThreat = new
-		 * RouteComputeThreat(LODZ_START, LODZ_DEST); routeComputeThreat.run();
-		 */
 		waypointsArray = new ArrayList<LatLng>();
 		waypoints = "";
 		
-		//DialogProvider alertDialog = new DialogProvider();
-		//alertDialog.showDialog(this);		
+
 	}
 
 	
@@ -199,7 +195,7 @@ public class MapNavigatorActivity extends MainActivity
 		this.actualLatLng = new LatLng(actualLatLng.getLatitude(), actualLatLng.getLongitude());
 		float[] distance = new float[3];
 		Location.distanceBetween(this.actualLatLng.latitude, this.actualLatLng.longitude, destLatLng.latitude, destLatLng.longitude, distance);
-		((TextView)findViewById(R.id.distanceTextView)).setText("Distance: "+distance[0]);
+		((TextView)findViewById(R.id.distanceTextView)).setText("Distance: "+distance[0] + " m");
 		if(routeCompute == null){
 			routeCompute = new RouteCompute(this, pDialog, this.actualLatLng, destLatLng, waypoints);
 			routeCompute.setPointStart(this.actualLatLng);
@@ -229,11 +225,11 @@ public class MapNavigatorActivity extends MainActivity
 		while(itStart.hasNext()){
 			Map.Entry<LatLng, String> entryStart = (Map.Entry<LatLng, String>) itStart.next();
 			LatLng latlngStart = entryStart.getKey();
-			MarkerOptions marker = new MarkerOptions().position(latlngStart).icon(BitmapDescriptorFactory
-					.fromResource(R.drawable.info_icon)).title(entryStart.getValue()); 
+			MarkerOptions markerHint = new MarkerOptions().position(latlngStart).icon(BitmapDescriptorFactory
+					.fromResource(R.drawable.info_icon)).title(entryStart.getValue().replace("<b>", "").replace("</b>", "")); 
 			if(isFisrtInitMap)
-				markersInfoRoute.add(marker);
-			map.addMarker(marker);
+				markersInfoRoute.add(markerHint);
+			map.addMarker(markerHint);
 		}
 	}
 	

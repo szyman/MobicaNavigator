@@ -1,16 +1,12 @@
 package com.mobicanavigator.activity;
 
 
-import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -24,7 +20,7 @@ public class AugRealityActivity extends MainActivity implements SensorEventListe
 	private SensorManager sensorManager;
 	private Sensor magneticFieldSensor;
 	private Sensor accelelometerSensor;
-	private Sensor gravitySensor;
+	//private Sensor gravitySensor;
 	
 	private float[] matrixR;
 	private float[] matrixValues;
@@ -36,12 +32,7 @@ public class AugRealityActivity extends MainActivity implements SensorEventListe
 	final float alpha = 0.8f;
 	
 	private View augRealityView;
-	private LocationManager locationManager;
-	private final String mocLocationName = "mocLocation";
-	
-	
-	
-	private Location mobicaLodzLoc;
+	private Location officeLoc;
 	
 
 
@@ -53,7 +44,7 @@ public class AugRealityActivity extends MainActivity implements SensorEventListe
 		sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
 		accelelometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 		magneticFieldSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-		gravitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+		//gravitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
 		matrixR = new float[9];
 		matrixValues = new float[3];
 		matrixI = new float[9];
@@ -63,10 +54,12 @@ public class AugRealityActivity extends MainActivity implements SensorEventListe
 		
 		Bundle extras = getIntent().getExtras();
 		float[] officeDirection = extras.getFloatArray("officeDirection");
+		String officeName = extras.getString("officeName");
+		((AugRealityView) augRealityView).setOfficeName(officeName);
 		
-		mobicaLodzLoc = new Location("mobicaLodzLoc");
-		mobicaLodzLoc.setLongitude(officeDirection[0]);
-		mobicaLodzLoc.setLatitude(officeDirection[1]);
+		officeLoc = new Location("officeLoc");
+		officeLoc.setLongitude(officeDirection[0]);
+		officeLoc.setLatitude(officeDirection[1]);
 		
 		
 		setContentView(augRealityView);
@@ -137,13 +130,13 @@ public class AugRealityActivity extends MainActivity implements SensorEventListe
 		   SensorManager.remapCoordinateSystem(matrixR, SensorManager.AXIS_X, SensorManager.AXIS_Z, matrixR);
 		   SensorManager.getOrientation(matrixR, matrixValues);
 		   
-		   double azimuth = Math.toDegrees(matrixValues[0]);
+		   //double azimuth = Math.toDegrees(matrixValues[0]);
 		   double pitch = Math.toDegrees(matrixValues[1]);
-		   double roll = Math.toDegrees(matrixValues[2]);
+		   //double roll = Math.toDegrees(matrixValues[2]);
 		   
 		   if(pitch > - 10 && pitch < 10)
 			   ((AugRealityView)augRealityView).updateDirection(matrixValues[0]);
-		   Log.e("results", ""+azimuth);// + " , " + pitch + " , " +roll);
+		   //Log.e("results", ""+azimuth);// + " , " + pitch + " , " +roll);
 		}
 	}
 	
@@ -152,7 +145,7 @@ public class AugRealityActivity extends MainActivity implements SensorEventListe
 	}
 
 	public Location getMobicaLodzLoc() {
-		return mobicaLodzLoc;
+		return officeLoc;
 	}
 	
 }

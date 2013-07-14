@@ -5,7 +5,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.provider.ContactsContract.CommonDataKinds.Event;
 import android.util.Log;
 
 public class SensorsProvider implements SensorEventListener {
