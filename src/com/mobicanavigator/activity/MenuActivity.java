@@ -11,10 +11,10 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 
-import com.cmobicanavigator.model.DialogType;
 import com.main.campusnavigator.R;
 import com.mobicanavigator.activity.providers.DataProvider;
 import com.mobicanavigator.activity.providers.DialogProvider;
+import com.mobicanavigator.model.DialogType;
 import com.mobicanavigator.view.MenuView;
 
 public class MenuActivity extends MainActivity implements OnClickListener,

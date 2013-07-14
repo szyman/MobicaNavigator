@@ -1,4 +1,4 @@
-package com.cmobicanavigator.model;
+package com.mobicanavigator.model;
 
 public class PointerModel {
 	

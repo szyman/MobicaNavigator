@@ -1,6 +1,6 @@
 package com.mobicanavigator.activity.providers;
 
-import com.cmobicanavigator.model.DialogType;
+import com.mobicanavigator.model.DialogType;
 
 import android.R;
 import android.app.AlertDialog;

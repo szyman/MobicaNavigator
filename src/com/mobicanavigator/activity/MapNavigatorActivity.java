@@ -17,7 +17,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.cmobicanavigator.model.DialogType;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
@@ -32,6 +31,7 @@ import com.main.campusnavigator.R;
 import com.mobicanavigator.activity.providers.DialogProvider;
 import com.mobicanavigator.activity.providers.GpsProvider;
 import com.mobicanavigator.activity.threats.RouteCompute;
+import com.mobicanavigator.model.DialogType;
 
 public class MapNavigatorActivity extends MainActivity 
 	implements OnMapLongClickListener, OnDismissListener, OnClickListener {

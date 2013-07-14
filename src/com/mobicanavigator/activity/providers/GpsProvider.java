@@ -5,8 +5,8 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 
-import com.cmobicanavigator.model.DialogType;
 import com.main.campusnavigator.R;
+import com.mobicanavigator.model.DialogType;
 import com.mobicanavigator.patterns.GpsListenerFactory;
 
 

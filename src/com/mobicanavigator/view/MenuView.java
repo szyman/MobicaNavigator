@@ -1,7 +1,8 @@
 package com.mobicanavigator.view;
 
-import com.cmobicanavigator.model.Office;
 import com.main.campusnavigator.R;
+import com.mobicanavigator.model.Office;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
