@@ -61,8 +61,8 @@ public class CompassView extends View {
 				(float) (w / 2 + r * Math.sin(-direction)), 
 				(float) (h / 2 - r * Math.cos(-direction)), paint);
 
-		float officeCircle = -direction - bearing;
-		Log.e("officeCircle", "" + officeCircle);
+		//float officeCircle = -direction - bearing;
+		//Log.e("officeCircle", "" + officeCircle);
 		
 		paint.setColor(Color.BLUE);
 		canvas.drawCircle((float) (w / 2 + r * Math.sin(- direction - bearing)),
