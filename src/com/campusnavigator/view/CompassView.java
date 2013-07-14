@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 public class CompassView extends View {
@@ -60,9 +61,12 @@ public class CompassView extends View {
 				(float) (w / 2 + r * Math.sin(-direction)), 
 				(float) (h / 2 - r * Math.cos(-direction)), paint);
 
+		float officeCircle = -direction - bearing;
+		Log.e("officeCircle", "" + officeCircle);
+		
 		paint.setColor(Color.BLUE);
-		canvas.drawCircle((float) (w / 2 + r * Math.sin(-direction - bearing)),
-				(float) (h / 2 - r * Math.cos(-direction - bearing)),
+		canvas.drawCircle((float) (w / 2 + r * Math.sin(- direction - bearing)),
+				(float) (h / 2 - r * Math.cos(- direction - bearing)),
 				20, paint);
 
 	}
@@ -73,7 +77,7 @@ public class CompassView extends View {
 	}
 
 	public void updateBearing(float bearing) {
-		this.bearing = bearing - 180;
+		this.bearing = bearing;
 		invalidate();
 	}
 }

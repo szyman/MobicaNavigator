@@ -7,10 +7,13 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".CompassActivity" >
-
+    <include
+        android:id="@+id/include1"
+        layout="@layout/infobar" />
 	<view 
 	    class="com.campusnavigator.view.CompassView"
 	    android:id="@+id/compassRoute"
 	    android:layout_width="fill_parent"
-	    android:layout_height="fill_parent"/>
+	    android:layout_height="fill_parent"
+	    android:layout_below="@+id/include1"/>
 </RelativeLayout>

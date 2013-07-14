@@ -134,8 +134,7 @@ public class AugRealityView extends SurfaceView implements
 			// TODO Auto-generated constructor stub
 		}
 		
-		private void callToInvalidate(){
-			
+		private void callToInvalidate(){	
 			invalidate();
 		}
 		
@@ -170,13 +169,21 @@ public class AugRealityView extends SurfaceView implements
 			  float mobicaPoint = Math.round((float)(w/2 - r * Math.sin(-bearing)));
 			  
 				paint.setColor(Color.RED);
-				canvas.drawLine(w / 2, h / 2,
-						(float) (w / 2 + r * Math.sin(-direction)), 
-						(float) (h / 2 - r * Math.cos(-direction)), paint);
+				//canvas.drawLine(w / 2, h / 2,
+				//		(float) (w / 2 + r * Math.sin(-direction)), 
+				//		(float) (h / 2 - r * Math.cos(-direction)), paint);
+				if((float) (h / 2 - r * Math.cos(-direction)) <= canvas.getHeight() / 2)
+				canvas.drawCircle((float) (w / 2 + r * Math.sin(-direction)),
+						canvas.getHeight() / 2,
+						20, paint);
 
 				paint.setColor(Color.BLUE);
+				//canvas.drawCircle((float) (w / 2 + r * Math.sin(-direction - bearing)),
+				//		(float) (h / 2 - r * Math.cos(-direction - bearing)),
+				//		20, paint);
+				if((float) (h / 2 - r * Math.cos(-direction - bearing)) <= canvas.getHeight() / 2)
 				canvas.drawCircle((float) (w / 2 + r * Math.sin(-direction - bearing)),
-						(float) (h / 2 - r * Math.cos(-direction - bearing)),
+						canvas.getHeight() / 2,
 						20, paint);
 			  //Log.e("direction", Math.sin(-direction) + " " + Math.cos(-direction));
 		}

@@ -134,7 +134,7 @@ public class AugRealityActivity extends MainActivity implements SensorEventListe
 		
 		if(success){
 		   
-		   SensorManager.remapCoordinateSystem(matrixR, SensorManager.AXIS_X, SensorManager.AXIS_MINUS_Z, matrixR);
+		   SensorManager.remapCoordinateSystem(matrixR, SensorManager.AXIS_X, SensorManager.AXIS_Z, matrixR);
 		   SensorManager.getOrientation(matrixR, matrixValues);
 		   
 		   double azimuth = Math.toDegrees(matrixValues[0]);

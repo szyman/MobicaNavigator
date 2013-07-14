@@ -5,6 +5,7 @@ import com.campusnavigator.view.CompassView;
 
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 
 public class GpsCompasListener implements GpsListenerInf {
 
@@ -18,9 +19,9 @@ public class GpsCompasListener implements GpsListenerInf {
 	@Override
 	public void onLocationChanged(Location location) {
 		// TODO Auto-generated method stub
-		
+		Log.e("compasGPS", location.getLatitude() + " : " + location.getLongitude());
 		Location.distanceBetween(location.getLatitude(), location.getLongitude(), compassActivity.getMobicaLodzLoc().getLatitude(), compassActivity.getMobicaLodzLoc().getLongitude(), results);
-		((CompassView)compassActivity.getCompassView()).updateBearing(results[1]);
+		((CompassView)compassActivity.getCompassView()).updateBearing(results[0]);
 	}
 
 	@Override

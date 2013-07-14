@@ -19,7 +19,7 @@ public class GpsAugRealityListener implements GpsListenerInf{
 	public void onLocationChanged(Location curLocation) {
 		// TODO Auto-generated method stub
 		Location.distanceBetween(curLocation.getLatitude(), curLocation.getLongitude(), arActivity.getMobicaLodzLoc().getLatitude(), arActivity.getMobicaLodzLoc().getLongitude(), results);
-		((AugRealityView) arActivity.getAugRealityView()).updateBearing(results[1]);
+		((AugRealityView) arActivity.getAugRealityView()).updateBearing(results[0]);
 	}
 
 	@Override
